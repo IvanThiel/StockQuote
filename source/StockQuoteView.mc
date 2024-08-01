@@ -37,6 +37,7 @@ var _public = true;
     e.g. ^DJI;^IXIC;BTC-USD;GRMN
     for  Dow Jones Index, Nasdaq Index, BITCOIN and Garmin
   
+  
   */
 
 class StockQuoteView extends Ui.DataField {
