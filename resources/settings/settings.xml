@@ -1,0 +1,5 @@
+    <settings>
+        <setting propertyKey="@Properties.symbols" prompt="@Strings.SymbolsPrompt"  title="@Strings.SymbolsTitle">
+            <settingConfig type="alphaNumeric" required="true" maxLength="160"/>
+        </setting>
+    </settings>

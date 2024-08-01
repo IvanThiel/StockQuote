@@ -1,0 +1,5 @@
+<strings>
+    <string id="AppName">StockQuote</string>
+     <string id="SymbolsPrompt">^AEX;YM=F;BTC-USD</string>
+      <string id="SymbolsTitle">Symbols</string>
+</strings>
