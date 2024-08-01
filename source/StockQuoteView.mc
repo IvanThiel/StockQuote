@@ -37,7 +37,7 @@ var _public = true;
     e.g. ^DJI;^IXIC;BTC-USD;GRMN
     for  Dow Jones Index, Nasdaq Index, BITCOIN and Garmin
   
-  
+
   */
 
 class StockQuoteView extends Ui.DataField {
@@ -72,7 +72,6 @@ class StockQuoteView extends Ui.DataField {
       try {
         DataField.initialize();  
         getSettings();
-        //mBikeRadar = new AntPlus.BikeRadar(new CombiSpeedRadarListener()); 
       } catch (ex) {
         debug ("init error: "+ex.getErrorMessage());
       }         
@@ -87,11 +86,6 @@ class StockQuoteView extends Ui.DataField {
           s = "GRMN";
         }
 
-        if (!_public) {
-          s = DEFAULT_SETTINGS;
-        }
-
-        // s = "^DJI;^IXIC;BTC-USD;GRMN";
         parseSettings(s);
        } catch(ex) {
         debug("getSettings error: "+ex.getErrorMessage());
@@ -163,7 +157,7 @@ class StockQuoteView extends Ui.DataField {
             var v = now.hour.format("%02d")+":"+now.min.format("%02d")+":"+now.sec.format("%02d");
             System.println(v);
             System.println(""+s);
-            System.println("CombiSpeedView: "+s);
+            System.println("StockQuoteApp: "+s);
             System.println("===========================================================================");
           }
         }
@@ -244,7 +238,7 @@ class StockQuoteView extends Ui.DataField {
       }
     }
 
-    function receiveKoers(responseCode, data) {
+    function receiveQuote(responseCode, data) {
       try {
         debug("->  Data received with code "+responseCode.toString());  
         //debug("->  Data "+data);  
@@ -313,21 +307,21 @@ class StockQuoteView extends Ui.DataField {
       }
     }
 
-    function getKoers(index) {
+    function getQuote(index) {
       try {
         if (mLoading) {
-          debug("getKoers: loading");
+          debug("getQuote: loading");
           return;
         }
         if ((!mConnectie) || (1==0)) {
-          debug("getKoers: Geen connectie");
+          debug("getQuote: No Connection");
           return;
         } 
   
         var i = index.toNumber();
-        debug("getKoers index: "+i);   
+        debug("getQuote index: "+i);   
         var symbol = mSymbol[i];
-        debug("getKoers symbol: "+symbol); 
+        debug("getKgetQuoteoers symbol: "+symbol); 
         if ((symbol==null) || (symbol.length()==0)) {
           mLoading = false;
           return;
@@ -345,12 +339,12 @@ class StockQuoteView extends Ui.DataField {
               {
                   "Content-Type" => Comm.REQUEST_CONTENT_TYPE_URL_ENCODED
               },
-              method(:receiveKoers)
+              method(:receiveQuote)
           );
       } catch (ex) {
          mLoading = false;
          mLoadingCount = 0;
-         debug("getKoers error: "+ex.getErrorMessage());
+         debug("getQuote error: "+ex.getErrorMessage());
       }
     }
 
@@ -646,15 +640,13 @@ class StockQuoteView extends Ui.DataField {
     function everyMinute() {
       var time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
       debug("EveryMinute "+time.min+" ====================================================");
-
-      // getDisplayedQuotes();
+      //getDisplayedQuotes();
     }
 
     function every5Minutes() {
       var time = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
       debug("EveryMinute "+time.min+" ====================================================");
-
-      getDisplayedQuotes();
+      //getDisplayedQuotes();
     }
 
     function every15Minutes() {
@@ -768,7 +760,7 @@ class StockQuoteView extends Ui.DataField {
       var q = popQueue();
       if (q!=null) {
         if (q>=0) {
-          getKoers(q);
+          getQuote(q);
         }
       }
     }
