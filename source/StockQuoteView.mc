@@ -18,7 +18,7 @@ var mSW;
 const DEFAULT_SETTINGS =  "^AEX;^AMX;BTC-USD;EURUSD=X;^FTSE;^GDAXI;YM=F;NQ=F;^DJI;^IXIC;CL=F;GC=F;^N225;^HSI";
 //const DEFAULT_SETTINGS =  "NVDA";
 
-var _debug = true;
+var _debug = false;
 var _sound = false;          
 var _public = true; 
 
