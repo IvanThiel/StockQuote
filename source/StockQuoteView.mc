@@ -16,8 +16,9 @@ var mSH;
 var mSW;
 
 const DEFAULT_SETTINGS =  "^AEX;^AMX;BTC-USD;EURUSD=X;^FTSE;^GDAXI;YM=F;NQ=F;^DJI;^IXIC;CL=F;GC=F;^N225;^HSI";
+//const DEFAULT_SETTINGS =  "NVDA";
 
-var _debug = false;
+var _debug = true;
 var _sound = false;          
 var _public = true; 
 
@@ -84,6 +85,10 @@ class StockQuoteView extends Ui.DataField {
 
         if ((s==null) || (s.length()==0)) {
           s = "GRMN";
+        }
+
+        if (_debug) {
+          s = DEFAULT_SETTINGS;
         }
 
         parseSettings(s);
@@ -241,26 +246,28 @@ class StockQuoteView extends Ui.DataField {
     function receiveQuote(responseCode, data) {
       try {
         debug("->  Data received with code "+responseCode.toString());  
-        //debug("->  Data "+data);  
+        debug("->  Data "+data);  
 
 
         if (
              (responseCode==200) && 
-             (data["optionChain"] != null)  && 
-             (data["optionChain"]["result"] !=null) &&
-             (data["optionChain"]["result"][0] !=null) &&
-             (data["optionChain"]["result"][0]["quote"] !=null) &&
-             (data["optionChain"]["result"][0]["quote"]["regularMarketChange"] !=null) 
+             (data["chart"] != null)  && 
+             (data["chart"]["result"] !=null) &&
+             (data["chart"]["result"][0] !=null) &&
+             (data["chart"]["result"][0]["meta"] !=null) &&
+             (data["chart"]["result"][0]["meta"]["regularMarketPrice"] !=null) 
            )  
         {  
-          var k  = data["optionChain"]["result"][0]["quote"]["regularMarketPrice"].toFloat();
-          var c  = data["optionChain"]["result"][0]["quote"]["regularMarketChange"].toFloat();
+          var k  = data["chart"]["result"][0]["meta"]["regularMarketPrice"].toFloat();
+          var p  = data["chart"]["result"][0]["meta"]["chartPreviousClose"].toFloat();
+          var c  = ((k - p) / k);
+
 
           if (k>0) {
             mPrevQuote[mLoadSymbol] = mQuote[mLoadSymbol];
             mQuote[mLoadSymbol] = k;
             mChange[mLoadSymbol] = c;
-            c = Math.round((c / k) * 1000)/10;
+            c = Math.round(c  * 1000)/10;
 
             if (k<1000) {
               if (k<100) {
@@ -327,12 +334,15 @@ class StockQuoteView extends Ui.DataField {
           return;
         } 
 
+        // https://query2.finance.yahoo.com/v8/finance/chart/^AEX?interval=1d
+
         mLoading = true;
         mLoadingCount = 0;
         mLoadSymbol = i;
 
         Comm.makeWebRequest(
-              "https://query2.finance.yahoo.com/v6/finance/options/"+symbol,
+              //"https://query2.finance.yahoo.com/v6/finance/options/"+symbol,
+              "https://query2.finance.yahoo.com/v8/finance/chart/"+symbol+"?interval=1d",
               {
                   
               },
